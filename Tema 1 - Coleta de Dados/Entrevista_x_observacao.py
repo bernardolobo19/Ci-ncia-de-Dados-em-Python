@@ -45,12 +45,25 @@ df_comparacao = pd.merge(satisfacao_entrevista, satisfacao_observacao, on='Satis
 ordem_satisfacao = ['Baixa', 'Média', 'Alta']
 df_comparacao['Satisfação'] = pd.Categorical(df_comparacao['Satisfação'], categories=ordem_satisfacao, ordered=True)
 
-# Visualização com seaborn
-plt.figure(figsize=(10, 6))
-sns.set_style("whitegrid")
+# Média do tempo de entrevista para cada nível de satisfação
+
+df_entrevistas_alta = df_entrevistas[df_entrevistas['Satisfação_Entrevista'] == 'Alta']
+media_tempo_entrevista_alta = df_entrevistas_alta['Tempo_Entrevista'].mean()
+
+df_entrevistas_media = df_entrevistas[df_entrevistas['Satisfação_Entrevista'] == 'Média']
+media_tempo_entrevista_media = df_entrevistas_media['Tempo_Entrevista'].mean()
+
+df_entrevistas_baixa = df_entrevistas[df_entrevistas['Satisfação_Entrevista'] == 'Baixa']
+media_tempo_entrevista_baixa = df_entrevistas_baixa['Tempo_Entrevista'].mean()
+
+# Média pelo método groupby - Mais fácil/rápida
+
+df_entrevistas_media_tempo = df_entrevistas.groupby(by= 'Satisfação_Entrevista')['Tempo_Entrevista'].mean().reset_index()
+df_entrevistas_media_tempo.columns = ['Satisfação', 'Tempo Médio']
+df_entrevistas_media_tempo['Satisfação'] = pd.Categorical(df_entrevistas_media_tempo['Satisfação'], categories=ordem_satisfacao, ordered=True)
 
 # Gráfico de barras lado a lado com cores vibrantes
-df_comparacao = df_comparacao.sort_values(by='Satisfação')
+df_comparacao = df_comparacao.sort_values(by= 'Satisfação')
 df_comparacao.plot(kind='bar', x='Satisfação', y=['Percentual Entrevista', 'Percentual Observação'],
                     color=['#FF5733', '#33FF57'], edgecolor='black', width=0.8)
 
@@ -59,5 +72,15 @@ plt.title('Comparação Percentual de Satisfação entre Entrevistas e Observaç
 plt.xlabel('Nível de Satisfação', fontsize=12)
 plt.ylabel('Percentual (%)', fontsize=12)
 plt.xticks(rotation=0)
+plt.tight_layout()
+
+
+# Gráfico de barras - Tempo médio por Satisfação
+df_entrevistas_media_tempo = df_entrevistas_media_tempo.sort_values(by= 'Satisfação')
+df_entrevistas_media_tempo.plot(kind='bar', x='Satisfação', y='Tempo Médio')
+
+plt.title('Tempo Médio de entrevista para cada nível de satisfação', fontsize=16)
+plt.xlabel('Nível de Satisfação', fontsize=12)
+plt.ylabel('Tempo Médio de Entrevista', fontsize=12)
 plt.tight_layout()
 plt.show()
