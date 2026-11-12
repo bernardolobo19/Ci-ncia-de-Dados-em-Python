@@ -23,16 +23,40 @@ df_grupo_a = df[df['Grupo'] == 'Grupo A']
 
 df_perc_a = df_grupo_a['Pergunta_1'].value_counts(normalize=True).mul(100).reset_index()
 df_perc_a.columns = ['Pergunta_1', 'Percentual']
-
+ordem = ['Sim', 'Não', 'Talvez']
 # Visualização com Seaborn - Percentual de Pergunta 1 para o Grupo A
 
-plt.figure(figsize=(8, 6))
+plt.figure(figsize=(12, 6))
 sns.set_style("whitegrid")
-sns.barplot(x='Pergunta_1', y='Percentual', hue='Pergunta_1', data=df_perc_a, palette='viridis', dodge=False, legend=False)
-
-# Ajuste de títulos e eixos
-plt.title('Percentual de Repostas Pergunta 1 - Grupo A', fontsize=16)
+plt.subplot(1, 2, 1)
+sns.barplot(x='Pergunta_1', y='Percentual', hue='Pergunta_1', data=df_perc_a, order=ordem, hue_order=ordem, palette='viridis', dodge=False, legend=False)
+plt.title('Grupo A')
 plt.xlabel('Resposta Pergunta 1', fontsize=12)
 plt.ylabel('Percentual (%)', fontsize=12)
+plt.ylim(0, 45)
+
+# Objetivo 2: Analisar as respostas do Grupo B para a Pergunta_1
+
+# Filtro para o Grupo B
+
+df_grupo_b = df[df['Grupo'] == 'Grupo B']
+
+# Calculando a proporção das respostas para o Grupo B
+
+df_perc_b = df_grupo_b['Pergunta_1'].value_counts(normalize=True).mul(100).reset_index()
+df_perc_b.columns = ['Pergunta_1', 'Percentual']
+
+# Visualização com Seaborn - Percentual de pergunta 1 para o Grupo B
+
+plt.subplot(1, 2, 2)
+sns.barplot(x='Pergunta_1', y='Percentual', hue='Pergunta_1', data=df_perc_b, order=ordem, hue_order=ordem, palette='viridis', dodge=False, legend=False)
+
+# Ajuste de títulos e eixos
+plt.title('Grupo B')
+plt.xlabel('Resposta Pergunta 1', fontsize=12)
+plt.ylabel('Percentual (%)', fontsize=12)
+plt.ylim(0, 45)
+
+
 plt.tight_layout()
 plt.show()
